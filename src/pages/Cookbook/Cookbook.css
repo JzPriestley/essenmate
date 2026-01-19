@@ -1,0 +1,262 @@
+.cookbook-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.cookbook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.add-btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.2rem;
+}
+
+/* CARD */
+.recipe-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 4px 12px rgba(0,0,0,.04);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,.08);
+}
+
+/* UNIFORM IMAGE WRAPPER */
+.img-wrapper {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: #eee;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* INFO */
+.recipe-info {
+  padding: 0.8rem 1rem;
+}
+
+.recipe-info h3 {
+  margin-bottom: 0.3rem;
+}
+
+.tags {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.view-link {
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 94%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.modal input,
+.modal textarea {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-soft);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.filter-bar input,
+.filter-bar select {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-soft);
+}
+
+/* CATEGORY CHIPS */
+.category-chips {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1.2rem;
+}
+
+.chip {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: #fff;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.chip.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 1000;
+}
+
+.drawer {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 360px;
+  padding: 1.2rem;
+  background: white;
+  padding: 1rem;
+  overflow-y: auto;
+  animation: slideIn .3s ease;
+}
+.drawer h2 {
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.drawer p {
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+.drawer .notes {
+  margin: 1rem 0;
+  color: #444;
+}
+
+.drawer a {
+  display: inline-block;
+  margin-top: 0.6rem;
+}
+
+.drawer-actions {
+  margin-top: 1.5rem;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* .drawer-img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+} */
+
+.drawer-img {
+  width: 100%;
+  height: 280px;            
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 0.8rem;
+}
+
+.close-btn {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+}
+
+.danger {
+  background: #e74c3c;
+  color: white;
+  padding: .6rem 1rem;
+  border-radius: 8px;
+}
+.ingredients-section {
+  margin-top: 0.8rem;
+}
+
+.ingredient-input {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.ingredient-input input {
+  flex: 1;
+}
+
+.ingredient-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.ingredient-chip {
+  background: #e8f5e9;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.ingredient-chip button {
+  background: none;
+  border: none;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.ingredients-view {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+

@@ -1,0 +1,171 @@
+.home-container {
+  padding: 0;
+  background: #f7f9f8;
+}
+
+/* =====================
+   HERO SECTION
+===================== */
+
+.hero {
+  height: 65vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-radius: 0 0 28px 28px;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  color: white;
+  padding: 1.5rem;
+}
+
+.hero-overlay h1 {
+  font-size: 2.6rem;
+  font-weight: 700;
+}
+
+.hero-overlay p {
+  margin-top: 0.6rem;
+  font-size: 1.05rem;
+  max-width: 520px;
+  opacity: 0.95;
+}
+
+.hero-actions {
+  margin-top: 1.4rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Buttons */
+.primary-btn {
+  background: #4caf50;
+  color: white;
+  padding: 0.7rem 1.3rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.primary-btn:hover {
+  background: #43a047;
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #2e7d32;
+  padding: 0.7rem 1.3rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* =====================
+   FEATURES
+===================== */
+
+.features {
+  padding: 3rem 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+
+/* Feature card (uses global .card too) */
+.feature-card {
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card h3 {
+  font-size: 1.05rem;
+}
+
+.feature-card p {
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.feature-card span {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-weight: 600;
+  color: #4caf50;
+}
+
+/* subtle gradient hover */
+.feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(22, 38, 22, 0.08),
+    rgba(2, 123, 16, 0.08)
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.feature-card:hover::before {
+  opacity: 1;
+}
+
+/* =====================
+   STATS
+===================== */
+
+.stats {
+  padding: 0 1.5rem 3rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  min-width: 140px;
+  text-align: center;
+}
+
+.stat h3 {
+  font-size: 1.8rem;
+  color: #4caf50;
+}
+
+.stat p {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+
+@media (max-width: 600px) {
+  .hero-overlay h1 {
+    font-size: 2rem;
+  }
+
+  .hero {
+    height: 55vh;
+  }
+}
