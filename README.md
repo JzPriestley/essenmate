@@ -75,7 +75,7 @@ Deployment: Netlify
 
 🚀 Live Demo
 
-(Add Netlify URL here once deployed)
+https://essenmate.netlify.app/
 
 📂 Project Setup
 npm install

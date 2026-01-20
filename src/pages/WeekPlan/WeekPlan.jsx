@@ -36,13 +36,27 @@ export default function WeekPlan() {
   const [plan, setPlan] = useState({});
   const [recipes, setRecipes] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [prefill, setPrefill] = useState(null);
 
   const { year, month, days, firstDayIndex } = getMonthDays();
 
   useEffect(() => {
     setPlan(getFromStorage("month_plan", {}));
     setRecipes(getFromStorage("cookbook_recipes", []));
+    const prefillData = getFromStorage("weekplan_prefill", null);
+    if (prefillData) {
+      setPrefill(prefillData);
+    }
+
   }, []);
+
+    useEffect(() => {
+    if (prefill) {
+      setSelectedDate(todayStr);
+      saveToStorage("weekplan_prefill", null); // clear intent
+    }
+  }, [prefill]);
+
 
   const savePlan = (dateStr, data) => {
     const updated = { ...plan, [dateStr]: data };
@@ -110,6 +124,7 @@ export default function WeekPlan() {
           dateStr={selectedDate}
           data={plan[selectedDate]}
           recipes={recipes}
+          prefill={prefill}
           onClose={() => setSelectedDate(null)}
           onSave={savePlan}
         />
@@ -119,8 +134,12 @@ export default function WeekPlan() {
 }
 
 //Modal Function
-function PlanModal({ dateStr, data, recipes, onClose, onSave }) {
-  const [recipeId, setRecipeId] = useState(data?.recipeId || "");
+function PlanModal({ dateStr, data, recipes, prefill, onClose, onSave }) {
+  // const [recipeId, setRecipeId] = useState(data?.recipeId || "");
+  const [recipeId, setRecipeId] = useState(
+  data?.recipeId || prefill?.recipeId || ""
+  );
+
   const [note, setNote] = useState(data?.note || "");
 
   const submit = () => {

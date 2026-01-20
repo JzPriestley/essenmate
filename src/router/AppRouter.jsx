@@ -4,7 +4,7 @@ import Home from "../pages/Home/Home";
 import Cookbook from "../pages/Cookbook/Cookbook";
 import WeekPlan from "../pages/WeekPlan/WeekPlan";
 import Groceries from "../pages/Groceries/Groceries";
-import SurpriseMe from "../pages/SurpriseMe";
+import SurpriseMe from "../pages/SurpriseMe/SurpriseMe";
 
 
 export default function AppRouter() {

@@ -23,6 +23,8 @@ export default function Cookbook() {
   const [cuisine, setCuisine] = useState("All");
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [editingRecipe, setEditingRecipe] = useState(null);
+  const [showFavorites, setShowFavorites] = useState(false);
+
 
 
   useEffect(() => {
@@ -70,8 +72,21 @@ export default function Cookbook() {
     const matchCuisine =
       cuisine === "All" || r.cuisine === cuisine;
 
-    return matchSearch && matchCategory && matchCuisine;
+    const matchFavorite =
+    !showFavorites || r.isFavorite;
+
+    return matchSearch && matchCategory && matchCuisine && matchFavorite;
   });
+
+  const toggleFavorite = (id) => {
+  const updated = recipes.map(r =>
+    r.id === id ? { ...r, isFavorite: !r.isFavorite } : r
+  );
+
+  setRecipes(updated);
+  saveToStorage("cookbook_recipes", updated);
+  };
+
 
   return (
     <div className="cookbook-container">
@@ -103,6 +118,15 @@ export default function Cookbook() {
             <option key={c}>{c}</option>
           ))}
         </select>
+        <label className="favorite-filter">
+        <input
+          type="checkbox"
+          checked={showFavorites}
+          onChange={() => setShowFavorites(!showFavorites)}
+        />
+        Favorites
+      </label>
+
       </div>
 
       {/* CATEGORY CHIPS */}
@@ -118,7 +142,7 @@ export default function Cookbook() {
         ))}
       </div>
 
-      <RecipeGrid recipes={filteredRecipes} onSelect={setSelectedRecipe}/>
+      <RecipeGrid recipes={filteredRecipes} onSelect={setSelectedRecipe} onToggleFavorite={toggleFavorite}/>
 
       {showForm && (
       <AddRecipeModal
@@ -153,14 +177,14 @@ export default function Cookbook() {
 }
 
 // HELPER COMPONENTS
-function RecipeGrid({ recipes, onSelect }) {
+function RecipeGrid({ recipes, onSelect, onToggleFavorite}) {
   if (recipes.length === 0)
     return <p>No recipes yet — add your first one! 🍳</p>;
 
   return (
     <div className="recipe-grid">
       {recipes.map((r) => (
-        <RecipeCard key={r.id} recipe={r} onClick={() => onSelect(r)} />
+        <RecipeCard key={r.id} recipe={r} onClick={() => onSelect(r)} onToggleFavorite={onToggleFavorite} />
       ))}
     </div>
   );
@@ -195,9 +219,19 @@ function RecipeGrid({ recipes, onSelect }) {
 //   );
 // }
 
-function RecipeCard({ recipe, onClick }) {
+function RecipeCard({ recipe, onClick , onToggleFavorite }) {
   return (
     <div className="recipe-card card" onClick={onClick}>
+      <button
+        className={`favorite-btn ${recipe.isFavorite ? "active" : ""}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleFavorite(recipe.id);
+        }}
+        title="Toggle favorite"
+      >
+        ★
+      </button>
       <div className="img-wrapper">
         <img
           src={recipe.image || "/placeholder.jpg"}
@@ -217,22 +251,49 @@ function RecipeCard({ recipe, onClick }) {
 }
 
 function AddRecipeModal({ onClose, onSave, initialData }) {
+
+      const CATEGORY_OPTIONS = [
+      "Breakfast",
+      "Lunch",
+      "Dinner",
+      "Snack",
+      "Dessert",
+      "Baking",
+      "Drinks",
+      "General"
+    ];
+
+    const CUISINE_OPTIONS = [
+      "Indian",
+      "Italian",
+      "German",
+      "Chinese",
+      "Turkish",
+      "French",
+      "Mexican",
+      "Other"
+    ];
+
   const [form, setForm] = useState(
-    initialData || {
+  initialData || {
     title: "",
     image: "",
     sourceUrl: "",
     sourceType: "manual",
-    category: "General",
-    cuisine: "Other",
+    category: CATEGORY_OPTIONS[0], // default to first category
+    cuisine: CUISINE_OPTIONS[0],   // default to first cuisine
     notes: "",
-    recipeIngredients: []
-  });
+    recipeIngredients: [] // will now be array of objects
+  }
+);
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
   const [ingredientInput, setIngredientInput] = useState("");
+  const [quantityInput, setQuantityInput] = useState("");
+
   const submit = () => {
     if (!form.title) return alert("Recipe name is required");
 
@@ -255,13 +316,18 @@ function AddRecipeModal({ onClose, onSave, initialData }) {
   const addIngredient = () => {
   if (!ingredientInput.trim()) return;
 
-  setForm({
-    ...form,
-    recipeIngredients: [...(form.recipeIngredients || []), ingredientInput.trim()]
-  });
+    setForm({
+      ...form,
+      recipeIngredients: [
+        ...(form.recipeIngredients || []),
+        { name: ingredientInput.trim(), qty: quantityInput.trim() }
+      ]
+    });
 
-  setIngredientInput("");
+    setIngredientInput("");
+    setQuantityInput("");
   };
+
 
   const removeIngredient = (index) => {
     const updated = [...form.recipeIngredients];
@@ -272,39 +338,66 @@ function AddRecipeModal({ onClose, onSave, initialData }) {
   return (
     <div className="modal-overlay">
       <div className="modal card">
+        <div className="modal-header">
         <h3>{initialData ? "Edit Recipe" : "Add Recipe"}</h3>
+        </div>
+        <div className="modal-body">
+         <div className="form-group">
+          <label>Recipe Name</label> 
+          <input name="title" value={form.title} placeholder="Recipe name" onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Image Link</label> 
+          <input
+            name="image"
+            value={form.image}
+            placeholder="Image URL"
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Source</label> 
+          <input
+            name="sourceUrl"
+            value={form.sourceUrl}
+            placeholder="YouTube / Instagram / Website URL (optional)"
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-row">
+          <div className="form-group">
+            <label>Category</label>
+            <select
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+            >
+              {CATEGORY_OPTIONS.map(c => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </div>
 
-        <input name="title" placeholder="Recipe name" onChange={handleChange} />
+          <div className="form-group">
+            <label>Cuisine</label>
+            <select
+              value={form.cuisine}
+              onChange={(e) => setForm({ ...form, cuisine: e.target.value })}
+            >
+              {CUISINE_OPTIONS.map(c => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-        <input
-          name="image"
-          placeholder="Image URL"
-          onChange={handleChange}
-        />
-
-        <input
-          name="sourceUrl"
-          placeholder="YouTube / Instagram / Website URL (optional)"
-          onChange={handleChange}
-        />
-
-        <input
-          name="category"
-          placeholder="Category (Breakfast, Dessert...)"
-          onChange={handleChange}
-        />
-
-        <input
-          name="cuisine"
-          placeholder="Cuisine (Indian, German...)"
-          onChange={handleChange}
-        />
-
-        <textarea
-          name="notes"
-          placeholder="Notes"
-          onChange={handleChange}
-        />
+        <div className="form-group">
+          <textarea
+            name="notes"
+            value={form.notes}
+            placeholder="Notes"
+            onChange={handleChange}
+          />
+        </div>
         {/* INGREDIENTS */}
         <div className="ingredients-section">
           <label>Ingredients</label>
@@ -312,24 +405,35 @@ function AddRecipeModal({ onClose, onSave, initialData }) {
           <div className="ingredient-input">
             <input
               type="text"
-              placeholder="Add ingredient (e.g. Milk)"
+              placeholder="Ingredient name (e.g. Milk)"
               value={ingredientInput}
+              title="Enter the ingredient name"
               onChange={(e) => setIngredientInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addIngredient()}
             />
-            <button type="button" onClick={addIngredient}>+</button>
+            <input
+              type="text"
+              placeholder="Quantity (e.g. 1 liter, 2 tsp)"
+              value={quantityInput}
+              title="Enter quantity (optional)"
+              onChange={(e) => setQuantityInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addIngredient()}
+            />
+            <button type="button" onClick={addIngredient} title="Add ingredient">+</button>
           </div>
+
+ 
 
           <div className="ingredient-list">
             {form.recipeIngredients?.map((ing, i) => (
               <span key={i} className="ingredient-chip">
-                {ing}
+                {ing.name} {ing.qty && `(${ing.qty})`}
                 <button type="button" onClick={() => removeIngredient(i)}>×</button>
               </span>
             ))}
           </div>
         </div>
-
+        </div>
         <div className="modal-actions">
           <button onClick={onClose}>Cancel</button>
           <button onClick={submit} className="add-btn">
@@ -364,9 +468,12 @@ function RecipeDrawer({ recipe, onClose, onDelete, onEdit }) {
           <h4>Ingredients</h4>
           <ul className="ingredients-view">
             {recipe.recipeIngredients.map((ing, i) => (
-              <li key={i}>{ing}</li>
+              <li key={i}>
+                {ing.name} {ing.qty && `(${ing.qty})`}
+              </li>
             ))}
           </ul>
+
         </>
         )}
 
@@ -381,7 +488,7 @@ function RecipeDrawer({ recipe, onClose, onDelete, onEdit }) {
         )}
 
         <div className="drawer-actions">
-          <button onClick={() => onEdit(recipe)}>Edit</button>
+          <button style={{ marginRight: "10px" }} onClick={() => onEdit(recipe)}>Edit</button>
           <button className="danger" onClick={() => onDelete(recipe.id)}>
             Delete
           </button>
