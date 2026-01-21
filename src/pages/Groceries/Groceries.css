@@ -2,6 +2,10 @@
   padding: 1rem;
 }
 
+.groceries-container h2 {
+  margin-bottom: 0.8rem; /* adjust spacing as you like */
+}
+
 .add-item {
   display: flex;
   gap: 0.5rem;

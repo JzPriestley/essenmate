@@ -188,6 +188,9 @@
   min-height: 80px;
 }
 
+.modal-header h3{
+  margin-bottom : 0.8rem;
+}
 .modal .form-group input:focus,
 .modal .form-group textarea:focus,
 .modal .form-group select:focus {
@@ -204,6 +207,13 @@
   margin-top: 0.8rem;
 }
 
+.ingredients-section label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 .ingredient-input {
   display: flex;
   gap: 0.4rem;
@@ -234,6 +244,23 @@
   margin-left: 4px;
   cursor: pointer;
 }
+
+
+/* =========================
+   SOURCE URL
+========================= */
+
+
+.source-link {
+  margin-top: 1rem;
+}
+
+.source-missing {
+  color: #888;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 
 /* =========================
    MODAL ACTIONS
@@ -276,6 +303,10 @@
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 0.8rem;
+}
+
+.drawer.card h4{
+   margin-bottom: 0.5rem;
 }
 
 .close-btn {
@@ -338,12 +369,23 @@
   color: #f5b301;
 }
 
-.favorite-filter {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.85rem;
+.favorite-toggle {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+  margin-left: auto; /* pushes it to the right */
 }
+
+.favorite-toggle.active {
+  background: #fff4cc;
+  border-color: #f0c040;
+  color: #f0a000;
+}
+
 
 /* =========================
    ANIMATION

@@ -6,8 +6,11 @@ import heroImg from "../../assets/images/hero-food.jpg";
 export default function Home() {
   const recipes = getFromStorage("cookbook_recipes", []);
   const plans = getFromStorage("month_plan", {});
+  const todayStr = new Date().toISOString().split("T")[0];
 
-  const plannedDays = Object.keys(plans).length;
+  const plannedDays = Object.keys(plans).filter(
+    dateStr => dateStr >= todayStr
+  ).length;
 
   return (
     <div className="home-container">
@@ -44,7 +47,7 @@ export default function Home() {
 
         <FeatureCard
           title="🗓 Meal Planner"
-          desc="Plan meals visually on a monthly calendar."
+          desc="Plan your meals visually on a monthly calendar."
           link="/week-plan"
         />
 

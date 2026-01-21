@@ -78,3 +78,25 @@
   font-size: 0.85rem; /* small, subtle */
   pointer-events: none; /* so click still triggers modal */
 }
+
+.meal-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.meal-row label {
+  width: 80px;
+  font-size: 0.8rem;
+  text-transform: capitalize;
+}
+
+.meal-indicators {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.65rem;
+  opacity: 0.7;
+}

@@ -86,7 +86,9 @@ export default function WeekPlan() {
           const isPast = dateStr < todayStr;
           const isToday = dateStr === todayStr;
           const isSelected = dateStr === selectedDate;
-          const hasPlan = !!plan[dateStr];
+          const hasPlan = plan[dateStr]?.meals && 
+          Object.values(plan[dateStr].meals).some(Boolean);   // Allow Multiple recipes
+
 
 
           return (
@@ -108,11 +110,13 @@ export default function WeekPlan() {
               {plan[dateStr]?.note && plan[dateStr].note.trim() !== "" && (
                 <div className="note-indicator" title="Note added">📝</div>
               )}
-              {/* Show recipe title if available */}
-              {plan[dateStr]?.recipeTitle && (
-                <p className="recipe-title">
-                  {plan[dateStr].recipeTitle}
-                </p>
+              {plan[dateStr]?.meals && (
+                <div className="meal-indicators">
+                  {Object.entries(plan[dateStr].meals).map(
+                    ([meal, value]) =>
+                      value && <span key={meal}>{meal[0].toUpperCase()}</span>
+                  )}
+                </div>
               )}
             </div>
           );
@@ -135,53 +139,72 @@ export default function WeekPlan() {
 
 //Modal Function
 function PlanModal({ dateStr, data, recipes, prefill, onClose, onSave }) {
-  // const [recipeId, setRecipeId] = useState(data?.recipeId || "");
-  const [recipeId, setRecipeId] = useState(
-  data?.recipeId || prefill?.recipeId || ""
-  );
+  const MEALS = ["breakfast", "lunch", "dinner", "dessert"];
 
-  const [note, setNote] = useState(data?.note || "");
+    const [meals, setMeals] = useState(
+      data?.meals || {
+        breakfast: null,
+        lunch: null,
+        dinner: null,
+        dessert: null
+      }
+    );
+
+    const [note, setNote] = useState(data?.note || "");
 
   const submit = () => {
-  let recipeTitle = "";
-  if (recipeId) {
-    const recipe = recipes.find(r => r.id === recipeId);
-    recipeTitle = recipe?.title || "";
-  }
+      const hasMeals = Object.values(meals).some(Boolean);
+      const hasNote = note.trim();
 
-  if (!recipeId && !note.trim()) {
-    alert("Please select a recipe or enter notes to save.");
-    return;
-  }
+      if (!hasMeals && !hasNote) {
+        alert("Add at least one meal or a note.");
+        return;
+      }
 
-  onSave(dateStr, {
-    recipeId: recipeId || null,
-    recipeTitle,
-    note: note.trim()
-  });
+      onSave(dateStr, {
+        meals,
+        note: note.trim()
+      });
 
-  onClose();
-  };
+      onClose();
+ };
 
 
   return (
     <div className="modal-overlay">
       <div className="modal">
         <h3>{dateStr}</h3>
+        {MEALS.map(meal => (
+  <div key={meal} className="meal-row">
+    <label>{meal}</label>
 
-        <select
-          value={recipeId}
-          onChange={e => setRecipeId(e.target.value)}
-        >
-          <option value="">Select recipe</option>
-          {recipes.map(r => (
-            <option key={r.id} value={r.id}>
-              {r.title}
-            </option>
-          ))}
-        </select>
+    <select
+      value={meals[meal]?.recipeId || ""}
+      onChange={e => {
+        const recipe = recipes.find(r => r.id === e.target.value);
+              setMeals({
+                ...meals,
+                [meal]: recipe
+                  ? {
+                      recipeId: recipe.id,
+                      recipeTitle: recipe.title
+                    }
+                  : null
+              });
+            }}
+          >
+            <option value="">No {meal}</option>
+            {recipes.map(r => (
+              <option key={r.id} value={r.id}>
+                {r.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      ))}
 
         <textarea
+          style={{ marginTop: "0.5rem" }}
           placeholder="Notes (optional)"
           value={note}
           onChange={e => setNote(e.target.value)}

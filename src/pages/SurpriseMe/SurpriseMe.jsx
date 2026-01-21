@@ -70,6 +70,7 @@ export default function SurpriseMe() {
           <div className="form-group">
             <label>Category</label>
             <select
+               style={{ width: "180px" }} 
               value={category}
               onChange={e => setCategory(e.target.value)}
             >
@@ -82,6 +83,7 @@ export default function SurpriseMe() {
           <div className="form-group">
             <label>Cuisine</label>
             <select
+               style={{ width: "180px" }} 
               value={cuisine}
               onChange={e => setCuisine(e.target.value)}
             >
@@ -90,17 +92,17 @@ export default function SurpriseMe() {
               ))}
             </select>
           </div>
-        </div>
 
-        <button
-          className="reset-btn"
-          onClick={() => {
-            setCategory("All");
-            setCuisine("All");
-          }}
-        >
-          Reset filters
-        </button>
+          <button
+              className="reset-btn"
+              onClick={() => {
+                setCategory("All");
+                setCuisine("All");
+              }}
+            >
+              Reset filters
+          </button>
+        </div>   
       </div>
 
       {/* MAIN ACTION */}

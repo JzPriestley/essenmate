@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { getFromStorage, saveToStorage } from "../../utils/storage";
 import "./Cookbook.css";
+import { demoRecipes, demoPlan } from "../../../src/demoData/demoData";
+
 
 const CATEGORIES = [
   "All",
@@ -25,18 +27,29 @@ export default function Cookbook() {
   const [editingRecipe, setEditingRecipe] = useState(null);
   const [showFavorites, setShowFavorites] = useState(false);
 
+  
 
+  // useEffect(() => {
+  //   setRecipes(getFromStorage("cookbook_recipes", []));
+  // }, []);
 
-  useEffect(() => {
-    setRecipes(getFromStorage("cookbook_recipes", []));
+   // Seed demo data if nothing exists
+    useEffect(() => {
+  // Load recipes from localStorage
+  const storedRecipes = getFromStorage("cookbook_recipes", null);
+
+  if (!storedRecipes || storedRecipes.length === 0) {
+    // Seed demo recipes and demo plan if nothing exists
+    setRecipes(demoRecipes);
+    saveToStorage("cookbook_recipes", demoRecipes);
+    saveToStorage("month_plan", demoPlan);
+  } else {
+    setRecipes(storedRecipes);
+  }
   }, []);
 
-  // const addRecipe = (recipe) => {
-  //   const updated = [recipe, ...recipes];
-  //   setRecipes(updated);
-  //   saveToStorage("cookbook_recipes", updated);
-  // };
 
+ 
   const saveRecipe = (recipe) => {
   let updated;
 
@@ -118,14 +131,14 @@ export default function Cookbook() {
             <option key={c}>{c}</option>
           ))}
         </select>
-        <label className="favorite-filter">
-        <input
-          type="checkbox"
-          checked={showFavorites}
-          onChange={() => setShowFavorites(!showFavorites)}
-        />
-        Favorites
-      </label>
+        <button
+          className={`favorite-toggle ${showFavorites ? "active" : ""}`}
+          onClick={() => setShowFavorites(!showFavorites)}
+          title="Show favorites"
+        >
+         Favorites ★ 
+        </button>
+
 
       </div>
 
@@ -477,16 +490,21 @@ function RecipeDrawer({ recipe, onClose, onDelete, onEdit }) {
         </>
         )}
 
-        {recipe.sourceUrl && (
-          <a
-            href={recipe.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View Source →
-          </a>
-        )}
-
+        <div className="source-link">
+            {recipe.sourceUrl ? (
+              <a
+                href={recipe.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Source →
+              </a>
+            ) : (
+              <span className="source-missing">
+                No external source available
+              </span>
+            )}
+        </div>
         <div className="drawer-actions">
           <button style={{ marginRight: "10px" }} onClick={() => onEdit(recipe)}>Edit</button>
           <button className="danger" onClick={() => onDelete(recipe.id)}>
